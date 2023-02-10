@@ -16,7 +16,7 @@ Users should be able to:
 
 ### Links
 
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Live Site URL: [Todo-App](https://c-yrus.github.io/todo-app-tailwindcss/)
 
 ### Built with
 
