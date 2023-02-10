@@ -67,7 +67,7 @@ const Todo = () => {
     );
   }, [todos, activeFilter]);
   return (
-    <div className="text-sm sm:text-lg font-Josefin relative h-screen w-screen flex text-black dark:text-white  justify-center items-center dark:bg-dark-primary">
+    <div className=" transition-all duration-100 text-sm sm:text-lg font-Josefin relative h-screen w-screen flex text-black dark:text-white  justify-center items-center dark:bg-dark-primary">
       <div className="absolute w-screen h-[50vh] top-0 left-0 z-0 ">
         <img
           className="w-full h-full object-cover"
@@ -103,7 +103,7 @@ const Todo = () => {
           </div>
         </div>
         <div className="bg-white  dark:bg-dark-secondary flex flex-col drop-shadow-lg rounded-md rounded-top overflow-hidden w-max">
-          {FiltredItems.map((todo, i) => (
+          {FiltredItems.map((todo, i: number) => (
             <div
               key={todo.id}
               draggable
