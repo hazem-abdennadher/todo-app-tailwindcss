@@ -4,11 +4,18 @@ type TodoItemProps = {
   done: boolean;
   description: string;
   toggleDone: (id: string) => void;
+  removeTodo: (id: string) => void;
 };
 
 import Check from '../../../assets/icons/icon-check.svg';
 import Cross from '../../../assets/icons/icon-cross.svg';
-const TodoItem: FC<TodoItemProps> = ({ done, description, id, toggleDone }) => {
+const TodoItem: FC<TodoItemProps> = ({
+  done,
+  description,
+  id,
+  toggleDone,
+  removeTodo,
+}) => {
   const handleClick = (id: string) => {
     toggleDone && toggleDone(id);
   };
@@ -27,7 +34,10 @@ const TodoItem: FC<TodoItemProps> = ({ done, description, id, toggleDone }) => {
         <p className={` ${done && 'line-through text-gray-400'} `}>
           {description}
         </p>
-        <div className="cursor-pointer hidden group-hover:block w-4 h-4">
+        <div
+          className="cursor-pointer hidden group-hover:block w-4 h-4"
+          onClick={() => removeTodo(id)}
+        >
           <img src={Cross} alt="cross" className="w-full h-full object-cover" />
         </div>
       </div>

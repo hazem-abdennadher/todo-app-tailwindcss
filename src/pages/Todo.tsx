@@ -11,7 +11,7 @@ import DarkBg from '../assets/images/bg-desktop-dark.jpg';
 import LightMBg from '../assets/images/bg-mobile-light.jpg';
 import DarkMBg from '../assets/images/bg-mobile-dark.jpg';
 import ToDoAdder from '../components/common/todo-adder';
-import { DragEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { DragEvent, useMemo, useRef, useState } from 'react';
 import { useTheme } from '../context/theme';
 import TodoItem from '../components/common/todo-item';
 import Filter from '../components/common/filter';
@@ -34,6 +34,10 @@ const Todo = () => {
 
   const clearCompleted = () => {
     const newTodos = todos.filter((todo) => !todo.done);
+    setTodos(newTodos);
+  };
+  const removeTodo = (id: string) => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
     setTodos(newTodos);
   };
 
@@ -121,6 +125,7 @@ const Todo = () => {
                 toggleDone={toggleTodo}
                 description={todo.description}
                 done={todo.done}
+                removeTodo={removeTodo}
               />
             </div>
           ))}
