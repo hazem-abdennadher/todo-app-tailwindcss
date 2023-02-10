@@ -11,7 +11,7 @@ import DarkBg from '../assets/images/bg-desktop-dark.jpg';
 import LightMBg from '../assets/images/bg-mobile-light.jpg';
 import DarkMBg from '../assets/images/bg-mobile-dark.jpg';
 import ToDoAdder from '../components/common/todo-adder';
-import { useState } from 'react';
+import { DragEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useTheme } from '../context/theme';
 import TodoItem from '../components/common/todo-item';
 import Filter from '../components/common/filter';
@@ -21,6 +21,9 @@ const Todo = () => {
   const { theme, toggleTheme } = useTheme();
   const isMobile = useMediaQuery('(max-width: 640px)');
   const [todos, setTodos] = useState(Data.todos);
+  const dragItem = useRef<number | null>();
+  const dragItemOver = useRef<number | null>();
+
   const [activeFilter, setActiveFilter] = useState<
     'all' | 'active' | 'completed'
   >('all');
@@ -43,13 +46,26 @@ const Todo = () => {
     });
     setTodos(newTodos);
   };
+  const onDragEnd = (e: DragEvent<HTMLDivElement>) => {
+    const index1 = dragItem.current as number;
+    const index2 = dragItemOver.current as number;
+    if (index1 !== index2) {
+      let _newElemets = [...todos];
+      const draggedItem = _newElemets.splice(index1, 1)[0];
+      _newElemets.splice(index2, 0, draggedItem);
+      setTodos(_newElemets);
+    }
+    dragItem.current = null;
+    dragItemOver.current = null;
+  };
 
-  const itemleft = todos.filter(
-    (todo) =>
-      activeFilter === 'all' ||
-      (activeFilter === 'active' ? !todo.done : todo.done)
-  ).length;
-
+  const FiltredItems = useMemo(() => {
+    return todos.filter(
+      (todo) =>
+        activeFilter === 'all' ||
+        (activeFilter === 'active' ? !todo.done : todo.done)
+    );
+  }, [todos, activeFilter]);
   return (
     <div className="text-sm sm:text-lg font-Josefin relative h-screen w-screen flex text-black dark:text-white  justify-center items-center dark:bg-dark-primary">
       <div className="absolute w-screen h-[50vh] top-0 left-0 z-0 ">
@@ -87,23 +103,29 @@ const Todo = () => {
           </div>
         </div>
         <div className="bg-white  dark:bg-dark-secondary flex flex-col drop-shadow-lg rounded-md rounded-top overflow-hidden w-max">
-          {todos
-            .filter(
-              (todo) =>
-                activeFilter === 'all' ||
-                (activeFilter === 'active' ? !todo.done : todo.done)
-            )
-            .map((todo, i) => (
+          {FiltredItems.map((todo, i) => (
+            <div
+              key={todo.id}
+              draggable
+              onDragStart={() => {
+                dragItem.current = i;
+              }}
+              onDragEnter={() => {
+                dragItemOver.current = i;
+              }}
+              onDragEnd={onDragEnd}
+              onDragOver={(e) => e.preventDefault()}
+            >
               <TodoItem
                 id={todo.id}
                 toggleDone={toggleTodo}
                 description={todo.description}
                 done={todo.done}
-                key={todo.id}
               />
-            ))}
+            </div>
+          ))}
           <Filter
-            itemleft={itemleft}
+            itemleft={FiltredItems.length}
             setActiveFilter={setActiveFilter}
             activeFilter={activeFilter}
             clearCompleted={clearCompleted}
